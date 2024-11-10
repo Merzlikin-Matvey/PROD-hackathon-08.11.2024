@@ -1,0 +1,13 @@
+services:
+
+  back:
+    image: fasttravel
+    container_name: fasttravel_back
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    extra_hosts:
+     - "host.docker.internal:host-gateway"
+    command: python -m src
+  

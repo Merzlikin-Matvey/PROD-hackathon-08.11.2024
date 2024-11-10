@@ -1,0 +1,390 @@
+swagger: '2.0'
+info:
+  description: API вашего сервера
+  version: "1.0.0"
+  title: Server API
+host: localhost:5000
+basePath: /
+tags:
+  - name: User
+    description: Операции с пользователями
+  - name: Tour
+    description: Операции с турами
+  - name: Event
+    description: Операции с событиями
+schemes:
+  - http
+paths:
+  /:
+    get:
+      tags:
+        - User
+      summary: Главная страница
+      responses:
+        200:
+          description: Успешный ответ
+  /login:
+    post:
+      tags:
+        - User
+      summary: Вход пользователя
+      parameters:
+        - in: body
+          name: body
+          description: Данные для входа
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: Успешный вход
+        401:
+          description: Ошибка авторизации
+  /registration:
+    post:
+      tags:
+        - User
+      summary: Регистрация пользователя
+      parameters:
+        - in: body
+          name: body
+          description: Данные для регистрации
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+              username:
+                type: string
+      responses:
+        200:
+          description: Успешная регистрация
+        400:
+          description: Ошибка регистрац��и
+  /activate:
+    get:
+      tags:
+        - User
+      summary: Активация аккаунта
+      parameters:
+        - name: email
+          in: query
+          description: Почта пользователя
+          required: true
+          type: string
+        - name: key
+          in: query
+          description: Ключ активации
+          required: true
+          type: string
+      responses:
+        200:
+          description: Успешная активация
+        400:
+          description: Ошибка активации
+  /ping:
+    get:
+      tags:
+        - User
+      summary: Проверка доступности сервера
+      responses:
+        200:
+          description: Сервер доступен
+  /jwt_ping:
+    get:
+      tags:
+        - User
+      summary: Проверка доступности сервера с JWT
+      responses:
+        200:
+          description: Сервер доступен
+  /add_tour:
+    post:
+      tags:
+        - Tour
+      summary: Добавление тура
+      parameters:
+        - in: body
+          name: body
+          description: Данные тура
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              country:
+                type: string
+      responses:
+        200:
+          description: Тур добавлен
+        403:
+          description: Ошибка авторизации
+  /delete_tour:
+    post:
+      tags:
+        - Tour
+      summary: Удаление тура
+      parameters:
+        - in: body
+          name: body
+          description: UUID тура
+          required: true
+          schema:
+            type: object
+            properties:
+              uuid:
+                type: string
+      responses:
+        200:
+          description: Тур удален
+        403:
+          description: Ошибка авторизации
+  /user_tours:
+    get:
+      tags:
+        - Tour
+      summary: Получение туров пользователя
+      responses:
+        200:
+          description: Список туров
+  /add_event:
+    post:
+      tags:
+        - Event
+      summary: Добавление события
+      parameters:
+        - in: body
+          name: body
+          description: Данные события
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              event_type:
+                type: string
+              start_date:
+                type: string
+                format: date-time
+              end_date:
+                type: string
+                format: date-time
+              event_data:
+                type: object
+              tour_uuid:
+                type: string
+      responses:
+        200:
+          description: Событие добавлено
+        403:
+          description: О��ибка авторизации
+  /events:
+    get:
+      tags:
+        - Event
+      summary: Получение всех событий тура
+      parameters:
+        - name: tour_uuid
+          in: query
+          description: UUID тура
+          required: true
+          type: string
+      responses:
+        200:
+          description: Список событий
+        400:
+          description: Ошибка запроса
+        404:
+          description: Тур не найден
+  /delete_event:
+    post:
+      tags:
+        - Event
+      summary: Удаление события
+      parameters:
+        - in: body
+          name: body
+          description: UUID события и тура
+          required: true
+          schema:
+            type: object
+            properties:
+              event_uuid:
+                type: string
+              tour_uuid:
+                type: string
+      responses:
+        200:
+          description: Событие удалено
+        403:
+          description: Ошибка авторизации
+  /update_event:
+    post:
+      tags:
+        - Event
+      summary: Обновление события
+      parameters:
+        - in: body
+          name: body
+          description: Данные события
+          required: true
+          schema:
+            type: object
+            properties:
+              event_uuid:
+                type: string
+              tour_uuid:
+                type: string
+              name:
+                type: string
+              event_type:
+                type: string
+              start_date:
+                type: string
+                format: date-time
+              end_date:
+                type: string
+                format: date-time
+              event_data:
+                type: object
+      responses:
+        200:
+          description: Событие обновлено
+        400:
+          description: Ошибка запроса
+        403:
+          description: Ошибка авторизации
+        404:
+          description: Событие не найдено
+  /tours:
+    get:
+      tags:
+        - Tour
+      summary: Получение всех туров
+      responses:
+        200:
+          description: Список туров
+  /change_airline:
+    post:
+      tags:
+        - Event
+      summary: Изменение авиакомпании
+      parameters:
+        - in: body
+          name: body
+          description: Данные авиакомпании
+          required: true
+          schema:
+            type: object
+            properties:
+              flight_number:
+                type: string
+              new_start_time:
+                type: string
+                format: date-time
+              new_end_time:
+                type: string
+                format: date-time
+      responses:
+        200:
+          description: Авиакомпания изменена
+        403:
+          description: Ошибка авторизации
+        400:
+          description: Ошибка запроса
+  /set_airline:
+    post:
+      tags:
+        - User
+      summary: Установка статуса авиакомпании
+      parameters:
+        - in: body
+          name: body
+          description: Данные пользователя и ключ администратора
+          required: true
+          schema:
+            type: object
+            properties:
+              user_uuid:
+                type: string
+              admin_key:
+                type: string
+      responses:
+        200:
+          description: Статус авиакомпании установлен
+        403:
+          description: Ошибка авторизации
+        400:
+          description: Ошибка запроса
+        404:
+          description: Пользователь не найден
+definitions:
+  User:
+    type: object
+    properties:
+      uuid:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      tour_uuids:
+        type: array
+        items:
+          type: string
+      event_uuids:
+        type: array
+        items:
+          type: string
+      airline:
+        type: boolean
+      is_active:
+        type: boolean
+  Tour:
+    type: object
+    properties:
+      uuid:
+        type: string
+      name:
+        type: string
+      country:
+        type: string
+      events:
+        type: array
+        items:
+          type: string
+      planned_budget:
+        type: number
+      start_date:
+        type: string
+        format: date-time
+      end_date:
+        type: string
+        format: date-time
+  Event:
+    type: object
+    properties:
+      uuid:
+        type: string
+      name:
+        type: string
+      event_type:
+        type: string
+      start_date:
+        type: string
+        format: date-time
+      end_date:
+        type: string
+        format: date-time
+      event_data:
+        type: object
